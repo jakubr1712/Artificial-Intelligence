@@ -1,0 +1,3 @@
+# Nonlinear Neuron
+
+This Python script simulates a simple artificial neuron with a choice of activation functions. The user is prompted to input three values and select an activation function. The activation functions available are a threshold (step) function and a sigmoid function. The script then generates three random weights, multiplies each input by its corresponding weight, and sums the results. The chosen activation function is applied to this sum and the result is printed. This is a basic element of neural networks and can be used for learning the basics of artificial intelligence and machine learning.
