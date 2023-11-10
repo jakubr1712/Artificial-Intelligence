@@ -1,0 +1,3 @@
+# Learning the neuron - the delta rule
+
+This Python script implements a perceptron, a type of artificial neuron. The perceptron takes three inputs, multiplies each by a corresponding weight, and applies a threshold activation function to the sum. The weights are initially set to random values and are then updated based on the difference between the expected and actual output. This process is repeated until the perceptron correctly classifies all input patterns. The purpose of this script is to demonstrate the learning process of a perceptron, which is a fundamental concept in neural networks and machine learning.
