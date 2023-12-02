@@ -1,40 +1,37 @@
 def train_hopfield(example):
-    sizeExample = len(example)
-    Wij = [[0 for _ in range(8)] for _ in range(8)]
+    size = len(example) * len(example[0])
+    Wij = [[0 for _ in range(size)] for _ in range(size)]
+    flat_example = [bit for row in example for bit in row]
 
-    for k in range(sizeExample):
-        row = example[k]
-        sizeRow = len(row)
-        for i in range(sizeRow):
-            for j in range(sizeRow):
-                if i != j:
-                    Wij[i][j] += ((2 * row[i] - 1) * (2 * row[j] - 1))
+    for i in range(size):
+        for j in range(size):
+            if i != j:
+                Wij[i][j] = (2 * flat_example[i] - 1) * \
+                    (2 * flat_example[j] - 1)
 
     return Wij
 
 
 def hopfield(Wij, testExample):
-    sizeTestExample = len(testExample)
-    result = [[0 for _ in range(8)] for _ in range(8)]
+    size = len(testExample) * len(testExample[0])
+    result = [[0 for _ in range(len(testExample[0]))]
+              for _ in range(len(testExample))]
 
-    for k in range(sizeTestExample):
-        rowTest = testExample[k]
+    flat_test = [bit for row in testExample for bit in row]
+    updated_flat_test = [0 for _ in range(size)]
 
-        row2 = []
-        for i in range(len(Wij)):
-            row2Item = 0
-            rowWage = Wij[i]
-            for j in range(len(rowWage)):
-                row2Item += rowWage[j] * rowTest[j]
+    for i in range(size):
+        weighted_sum = sum(Wij[i][j] * flat_test[j] for j in range(size))
+        if weighted_sum > 0:
+            updated_flat_test[i] = 1
+        elif weighted_sum < 0:
+            updated_flat_test[i] = 0
+        else:
+            updated_flat_test[i] = flat_test[i]
 
-            if row2Item == 0:
-                row2.append(rowTest[i])
-            elif row2Item > 0:
-                row2.append(1)
-            elif row2Item < 0:
-                row2.append(0)
-
-        result[k] = row2
+    for i in range(len(testExample)):
+        for j in range(len(testExample[0])):
+            result[i][j] = updated_flat_test[i * len(testExample[0]) + j]
 
     return result
 
@@ -48,17 +45,25 @@ def inputExample():
     return pattern
 
 
-example = [[1, 1, 1, 0, 0, 1, 0, 0],
-           [1, 1, 0, 0, 0, 0, 0, 0],
-           [1, 1, 0, 1, 0, 0, 0, 0],
-           [1, 1, 0, 0, 0, 1, 0, 0],
+example = [[1, 0, 0, 0, 0, 0, 0, 0],
+           [0, 1, 0, 0, 0, 0, 0, 0],
+           [0, 0, 1, 0, 0, 0, 0, 0],
+           [0, 0, 0, 1, 0, 0, 0, 0],
+           [0, 0, 0, 0, 1, 0, 0, 0],
            [0, 0, 0, 0, 0, 0, 0, 0],
-           [1, 1, 0, 0, 0, 0, 0, 0],
            [0, 0, 0, 0, 0, 0, 0, 0],
-           [0, 1, 1, 0, 0, 0, 0, 0]]
+           [0, 0, 0, 0, 0, 0, 0, 0]]
 
 
-testExample = inputExample()
+# testExample = inputExample()
+testExample = [[1, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 1, 0, 0, 0],
+               [1, 0, 0, 0, 0, 0, 0, 0],
+               [1, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 1]]
 
 Wij = train_hopfield(example)
 result = hopfield(Wij, testExample)
@@ -66,5 +71,3 @@ result = hopfield(Wij, testExample)
 print("\Recognized image:")
 for row in result:
     print(" ".join(map(str, row)))
-
-input("Press Enter to end the program.")
