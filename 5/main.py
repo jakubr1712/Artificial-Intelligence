@@ -19,18 +19,26 @@ def fitness(chromosome, data_points):
 
 # Selekcja ruletki
 # todo: 1 - (f/total_fitness) -> f/total_fitness
+# def select(population, fitness_values):
+#     max_fitness = max(fitness_values)
+#     normalized_fitness = [max_fitness - f for f in fitness_values]
+#     total_fitness = sum(normalized_fitness)
+#     selection_probs = [f / total_fitness for f in normalized_fitness]
+#     return random.choices(population, weights=selection_probs, k=len(population))
 def select(population, fitness_values):
     total_fitness = sum(fitness_values)
     selection_probs = [1 - (f/total_fitness) for f in fitness_values]
+    print(selection_probs)
     return random.choices(population, weights=selection_probs, k=len(population))
 
 # Krzyżowanie
 def crossover(ch1, ch2):
     point = random.randint(1, len(ch1) - 2)
+    # point = 8
     return ch1[:point] + ch2[point:], ch2[:point] + ch1[point:]
 
 # Mutacja
-def mutate(chromosome, mutation_rate=0.01):
+def mutate(chromosome, mutation_rate):
     return [gene if random.random() > mutation_rate else 1-gene for gene in chromosome]
 
 # Wizualizacja wyników
@@ -51,14 +59,18 @@ def plot_results(data_points, best_chromosome,start_best_chromosome):
 data_points = [(-5, -150), (-4, -77), (-3, -30), (-2, 0), (-1, 10), (0.5, 131/8), (1, 18), (2, 25), (3, 32), (4, 75), (5, 130)]
 
 # Parametry algorytmu
-N = 10  # Rozmiar populacji
+N = 20  # Rozmiar populacji
 chromosome_length = 20  # 4 współczynniki * 5 bitów każdy
-num_generations = 100000  # Maksymalna liczba pokoleń
-mutation_rate = 0.01
-stagnation_limit = 20  # Limit stagnacji
+num_generations = 10000 # Maksymalna liczba pokoleń
+mutation_rate = 0.15  # Prawdopodobieństwo mutacji
+stagnation_limit = 100  # Limit stagnacji
 
 # Inicjalizacja populacji
 population = [[random.randint(0, 1) for _ in range(chromosome_length)] for _ in range(N)]
+# prawie ze idealne
+# population=[[1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0],[1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0],[1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0],[1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0],[1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0],[1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0],[1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0],[1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0],[1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0],[1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, #1, 1, 1, 0],]
+# population=[[1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1]for _ in range(N)]
+ 
 best_fitness = float('inf')
 stagnation_counter = 0
 
@@ -69,7 +81,6 @@ start_best_chromosome = min(population, key=lambda ch: fitness(ch, data_points))
 # Główna pętla algorytmu
 for generation in range(num_generations):
     fitness_values = [fitness(ch, data_points) for ch in population]
-    print(fitness_values)
     current_best_fitness = min(fitness_values)
     if current_best_fitness < best_fitness:
         best_fitness = current_best_fitness
@@ -92,7 +103,8 @@ for generation in range(num_generations):
 best_chromosome = min(population, key=lambda ch: fitness(ch, data_points))
 decoded_coeffs = decode(best_chromosome)
 
-print(f"Najlepszy chromosom: {best_chromosome} ({decoded_coeffs}), Fitness: {fitness(best_chromosome, data_points)}")
+print(f"Przed Najlepszy chromosom: {start_best_chromosome} ({decode(start_best_chromosome)}), Fitness: {fitness(start_best_chromosome, data_points)}")
+print(f"Po Najlepszy chromosom: {best_chromosome} ({decoded_coeffs}), Fitness: {fitness(best_chromosome, data_points)}")
 
 # Wizualizacja wyników
 plot_results(data_points, best_chromosome,start_best_chromosome)
