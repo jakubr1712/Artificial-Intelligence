@@ -2,6 +2,8 @@
 
 This program implements a genetic algorithm for optimizing a function used to fit a curve to data. The program demonstrates how a genetic algorithm utilizes selection, crossover, and mutation to optimize a solution to a problem. Genetic algorithms show effectiveness in optimizing problems where traditional methods may not be efficient. Their flexibility and ability to explore solution spaces make them a powerful tool in various applications.
 
+![Genetic Algorithm](./imgs/ag.png)
+
 ## Program Overview:
 
 1. Chromosome Decoding:
